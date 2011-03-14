@@ -1,3 +1,9 @@
+/* timestamp.c
+
+   Copyright (C) 2011 Klaus Alexander Seistrup <klaus@seistrup.dk>.
+   Released under GPLv2+.
+*/
+
 #include <stdio.h>
 #include <time.h>
 
