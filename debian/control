@@ -1,0 +1,15 @@
+Source: timestamp
+Section: utils
+Priority: extra
+Maintainer: Adam Sjøgren <asjo@koldfront.dk>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.1
+Vcs-Git: https://koldfront.dk/git/timestamp/
+Vcs-Browser: https://koldfront.dk/git/timestamp/
+
+Package: timestamp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Prefix each line with a timestamp
+ timestamp prefixes each line received on standard input with a
+ timestamp in the format YYYY-MM-DD HH:MM:SS.
