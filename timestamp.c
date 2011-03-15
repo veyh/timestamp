@@ -7,20 +7,23 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
+
+#define BUFSIZE 1024
 
 void
-timestamp(void)
+timestamp(char *fmt)
 {
     time_t t;
     size_t l;
     struct tm *tm;
-    char buf[22];
+    static char buf[BUFSIZE];
 
     t = time(NULL);
 
-    if (t == (time_t) - 1)
+    if (t == (time_t) -1)
       {
-	  perror(NULL);
+	  perror("Couldn't get current time");
 	  _exit(1);
       }
 
@@ -29,19 +32,39 @@ timestamp(void)
     if (tm == (struct tm *) NULL)
 	_exit(-1);
 
-    l = strftime(buf, 21, "%Y-%m-%d %H:%M:%S\t", tm);
-
-    if (l == 0 || l > 20)
-	_exit(1);
+    if ((l = strftime(buf, BUFSIZE, fmt, tm)) == 0)
+      {
+	  (void) fprintf(stderr,
+			 "Resulting timestamp should be less than %d characters, please.\n",
+			 BUFSIZE);
+	  _exit(1);
+      }
 
     if (fwrite(buf, 1, l, stdout) != l)
+	_exit(1);
+
+    if (putchar('\t') == EOF)
 	_exit(1);
 }
 
 int
 main(int argc, char **argv)
 {
-    int c = getchar();
+    int c, t;
+    char *fmt = "%F %T";
+
+    if (argc > 1)
+      {
+	  if ((argc > 2) || (strcmp(argv[1], "-h") == 0)
+	      || (strcmp(argv[1], "--help") == 0))
+	    {
+		(void) puts("Usage: timestamp [FORMAT]");
+		return 0;
+	    }
+	  fmt = argv[1];
+      }
+
+    c = getchar();
 
     if (c == EOF)
 	return 0;
@@ -49,7 +72,7 @@ main(int argc, char **argv)
     if (ungetc(c, stdin) != c)
 	return 1;
 
-    timestamp();
+    timestamp(fmt);
 
     for (;;)
       {
@@ -60,7 +83,7 @@ main(int argc, char **argv)
 
 	  if (c == '\n')
 	    {
-		int t = getchar();
+		t = getchar();
 
 		if (putchar('\n') == EOF)
 		    return 1;
@@ -71,13 +94,10 @@ main(int argc, char **argv)
 		if (ungetc(t, stdin) != t)
 		    return 1;
 
-		timestamp();
+		timestamp(fmt);
 	    }
-	  else
-	    {
-		if (putchar(c) == EOF)
-		    return 1;
-	    }
-
+	  else if (putchar(c) == EOF)
+	      return 1;
       }
 }
+// indent -gnu -npcs -i4

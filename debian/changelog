@@ -1,3 +1,9 @@
+timestamp (1.2-1) unstable; urgency=low
+
+  * Now accepts optional format string
+
+ -- Klaus Alexander Seistrup <klaus@seistrup.dk>  Tue, 15 Mar 2011 12:22:32 +0100
+
 timestamp (1.1-1) unstable; urgency=low
 
   * Now checks return value of all library calls and exits in case of error

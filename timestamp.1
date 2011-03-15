@@ -3,7 +3,7 @@
 timestamp \-   prefix each line with a timestamp
 .SH SYNOPSIS
 <some command(s)> |
-.B timestamp
+.B timestamp [FORMAT]
 .SH DESCRIPTION
 timestamp prefixes each line received on standard input with a
 timestamp in the format YYYY-MM-DD HH:MM:SS.
@@ -20,4 +20,5 @@ Klaus Alexander Seistrup <klaus@seistrup.dk>
 .SH COPYRIGHT
 Copyright (C) 2011, Klaus Alexander Seistrup. License GPLv2+: GNU GPL version 2+.
 .SH SEE ALSO
+strftime(3) for date and time conversion specifications.
 ts(1) from the moreutils package.
