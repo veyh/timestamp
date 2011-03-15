@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#define BUFSIZE 1024
+#define BUFSIZE 128
 
 void
 timestamp(char *fmt)
@@ -64,6 +64,8 @@ main(int argc, char **argv)
 	  fmt = argv[1];
       }
 
+    setlinebuf(stdout);
+
     c = getchar();
 
     if (c == EOF)
@@ -100,4 +102,5 @@ main(int argc, char **argv)
 	      return 1;
       }
 }
+
 // indent -gnu -npcs -i4

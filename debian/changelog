@@ -1,3 +1,10 @@
+timestamp (1.3-1) unstable; urgency=low
+
+  * Output is now line buffered
+  * Timestamp buffer reduced to 128 characters (was 1024)
+
+ -- Klaus Alexander Seistrup <klaus@seistrup.dk>  Tue, 15 Mar 2011 13:34:47 +0100
+
 timestamp (1.2-1) unstable; urgency=low
 
   * Now accepts optional format string
