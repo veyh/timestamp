@@ -1,3 +1,10 @@
+timestamp (1.4-1) unstable; urgency=low
+
+  * Now calls setlocale() at invocation time
+  * GPLv2+ → GPLv3+ :)
+
+ -- Klaus Alexander Seistrup <klaus@seistrup.dk>  Tue, 15 Mar 2011 13:34:47 +0100
+
 timestamp (1.3-1) unstable; urgency=low
 
   * Output is now line buffered

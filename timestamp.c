@@ -1,13 +1,14 @@
 /* timestamp.c
 
    Copyright (C) 2011 Klaus Alexander Seistrup <klaus@seistrup.dk>.
-   Released under GPLv2+.
+   Released under GPLv3+.
 */
 
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <locale.h>
 
 #define BUFSIZE 128
 
@@ -52,6 +53,8 @@ main(int argc, char **argv)
 {
     int c, t;
     char *fmt = "%F %T";
+
+    (void) setlocale(LC_ALL, "");
 
     if (argc > 1)
       {
