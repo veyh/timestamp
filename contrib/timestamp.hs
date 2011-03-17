@@ -18,4 +18,4 @@ loop h = do eof <- hIsEOF h
               else do timestamp <- fmap show getZonedTime
                       string <- hGetLine h
                       putStrLn $ take 19 timestamp ++ "\t" ++ string
-                      main
+                      loop h
