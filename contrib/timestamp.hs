@@ -1,6 +1,7 @@
 -- timestamp.hs
 --
---     $ ghc -Wall -o timestamp timestamp.hs
+--     $ ghc -Wall -O -dynamic -o timestamp timestamp.hs
+--     $ strip timestamp
 --
 -- Copyright (C) 2011, Adam Sjøgren <asjo@koldfront.dk>. Released under the GPLv3+.
 
@@ -9,7 +10,7 @@ import System.Time
 import System.Locale
 
 main :: IO ()
-main = do hSetBuffering stdin (LineBuffering)
+main = do hSetBuffering stdin LineBuffering
           loop stdin
 
 loop :: Handle -> IO ()
