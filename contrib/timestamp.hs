@@ -6,16 +6,19 @@
 
 import System.IO
 import Data.Time
+import System.Locale
 
 main :: IO ()
 main = do hSetBuffering stdin (LineBuffering)
-          loop stdin
+          t <- getCurrentTime
+          zone <- getTimeZone t
+          loop stdin zone
 
-loop :: Handle -> IO ()
-loop h = do eof <- hIsEOF h
-            if eof
-              then return ()
-              else do timestamp <- fmap show getZonedTime
-                      string <- hGetLine h
-                      putStrLn $ take 19 timestamp ++ "\t" ++ string
-                      loop h
+loop :: Handle -> TimeZone -> IO ()
+loop h zone = do eof <- hIsEOF h
+                 if eof
+                   then return ()
+                   else do timestamp <- getCurrentTime
+                           string <- hGetLine h
+                           putStrLn $ formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S\t" (utcToZonedTime zone timestamp) ++ string
+                           loop h zone
