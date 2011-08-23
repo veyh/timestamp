@@ -3,7 +3,7 @@ Section: utils
 Priority: extra
 Maintainer: Adam Sjøgren <asjo@koldfront.dk>
 Build-Depends: debhelper (>= 7.0.50~)
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Vcs-Git: https://koldfront.dk/git/timestamp/
 Vcs-Browser: https://koldfront.dk/git/timestamp/
 
