@@ -1,3 +1,14 @@
+timestamp (1.5-1) unstable; urgency=low
+
+  * Change optional argument [FORMAT] to optional option [-f/--format
+    FORMAT], and add optional argument [LOGFILE]. This change is
+    incompatible with version 1.4 of timestamp.
+  * Reopen LOGFILE when SIGHUP is received, if LOGFILE was given (making
+    it possible to do a killall -HUP timestamp after rotating logfiles
+    written to via timestamp LOGFILE).
+
+ -- Adam Sjøgren <asjo@koldfront.dk>  Tue, 23 Aug 2011 22:57:05 +0200
+
 timestamp (1.4-3) unstable; urgency=low
 
   * Really add the GPLv3 license this time
