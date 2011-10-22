@@ -132,10 +132,10 @@ main(int argc, char **argv)
 
 	  if (c == '\n')
 	    {
-		t = getchar();
-
 		if (fputc('\n', out) == EOF)
 		    return 1;
+
+		t = getchar();
 
 		if (t == EOF)
 		    return 0;

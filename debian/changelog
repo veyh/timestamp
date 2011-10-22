@@ -1,3 +1,9 @@
+timestamp (1.6-1) unstable; urgency=low
+
+  * Fix "linefeed-is-output-when-first-char-of-next-line-is-received" buglet.
+
+ -- Adam Sjøgren <asjo@koldfront.dk>  Sat, 22 Oct 2011 22:55:48 +0200
+
 timestamp (1.5-1) unstable; urgency=low
 
   * Change optional argument [FORMAT] to optional option [-f/--format
