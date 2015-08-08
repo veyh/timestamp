@@ -1,0 +1,37 @@
+.TH TIMESTAMP 1
+.SH NAME
+timestamp \-   prefix each line with a timestamp
+.SH SYNOPSIS
+<some command(s)> |
+.B timestamp [\fB-f/--format\fR FORMAT] [LOGFILE]
+.SH DESCRIPTION
+timestamp prefixes each line received on standard input with a
+timestamp in the format YYYY-MM-DD HH:MM:SS.
+
+If LOGFILE is given, timestamp will write to LOGFILE instead of
+stdout.
+
+If timestamp receives a SIGHUP and LOGFILE has been given, timestamp
+will reopen the file (useful when rotating logfiles written to through
+timestamp).
+.SH OPTIONS
+.TP
+.BR \-f ", " \-\-format " " \fIFORMAT\fR
+Set the format of the timestamp prefixing each line.
+.SH EXAMPLE
+  $ (echo A; sleep 2s; echo B; sleep 3s; echo C) | timestamp
+  2011-03-14 20:58:58     A
+  2011-03-14 20:59:00     B
+  2011-03-14 20:59:03     C
+  $ 
+.SH DEVELOPMENT
+The source code can be found in this git repository: http://koldfront.dk/git/timestamp/
+.SH AUTHOR
+Klaus Alexander Seistrup <klaus@seistrup.dk>
+.SH COPYRIGHT
+Copyright (C) 2011, Klaus Alexander Seistrup. License GPLv3+: GNU GPL version 2+.
+.SH SEE ALSO
+strftime(3) for date and time conversion specifications,
+ts(1) from the moreutils package,
+killall(1),
+logrotate(8).

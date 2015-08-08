@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+# benchmark - benchmark the contribs against the main implementation.
+#
+#             Compile the C and the Haskell programs before running
+#             this script. The Perl script that is benchmarked is from
+#             the moreutils package.
+#
+#             Note that sh is so slow that we reduce the input size to
+#             a hundredth when benchmarking it.
+#
+#
+# Copyright (C), 2011 by Adam Sjøgren <asjo@koldfront.dk>. Under the GPLv3+.
+
+use strict;
+use warnings;
+
+use Benchmark;
+
+my $max=100_000;
+
+Benchmark::timethese(5, {
+    'c'       => sub { system "seq 1 $max | ../timestamp > /dev/null" },
+    'gawk'    => sub { system "seq 1 $max | ./timestamp.gawk > /dev/null" },
+    'haskell' => sub { system "seq 1 $max | ./timestamp > /dev/null" },
+    'perl'    => sub { system "seq 1 $max | /usr/bin/ts > /dev/null" },
+    'python'  => sub { system "seq 1 $max | ./timestamp.py > /dev/null" },
+    'rexx'    => sub { system "seq 1 $max | ./timestamp.rexx > /dev/null" },
+    'sh|100'  => sub { system "seq 1 " . $max/100 . " | ./timestamp.sh > /dev/null" },
+                     });
