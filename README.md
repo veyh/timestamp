@@ -32,12 +32,12 @@ This makes `stampit` a useful candidate for e.g.
 
 ```sh
 $ stampit Frække frølår
-2017-03-06T16:49:21.727686+00:00        Frække frølår
+2017-04-06T16:49:21.727686+00:00        Frække frølår
 $ stampit -o twtxt.txt Frække frølår
 $ echo Crème brûlée | stampit -o twtxt.txt
 $ cat twtxt.txt
-2017-03-06T16:50:47.250455+00:00        Frække frølår
-2017-03-06T16:51:02.068170+00:00        Crème brûlée
+2017-04-06T16:50:47.250455+00:00        Frække frølår
+2017-04-06T16:51:02.068170+00:00        Crème brûlée
 ```
 
 :smile:
