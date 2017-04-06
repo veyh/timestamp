@@ -26,7 +26,7 @@ $ (echo A; sleep 2s; echo B; sleep 3s; echo C) | timestamp
 This makes `stampit` a useful candidate for e.g.
 
 * posting to a [twtxt.txt](https://github.com/buckket/twtxt) file, or
-* logging one-line events to ever-growing logfile.
+* logging one-line events to an ever-growing logfile.
 
 ## Example
 
