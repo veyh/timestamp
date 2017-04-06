@@ -22,7 +22,7 @@
 #include <libgen.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.1.2 (2017-04-06)"
+#define VERSION  "0.1.3 (2017-04-06)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
@@ -80,7 +80,7 @@ timestamp(void)
   // = 32 chars for the stamp and 1 char for the TAB
   res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d+00:00\t",
 	       utc->tm_year + 1900,
-	       utc->tm_mon,
+	       utc->tm_mon + 1,
 	       utc->tm_mday,
 	       utc->tm_hour,
 	       utc->tm_min,
