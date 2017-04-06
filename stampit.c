@@ -127,15 +127,15 @@ main(int argc, char **argv)
 	case 'h':
 	  (void) fprintf(stderr, USAGE, prog);
 	  return 0;
-	  /*@fallthrough@ */
+	  /*@fallthrough@*/
 	case 'v':
 	  (void) fprintf(stderr, "%s/%s\n", PROGNAME, VERSION);
 	  return 0;
-	  /*@fallthrough@ */
+	  /*@fallthrough@*/
 	case 'c':
 	  (void) fputs("GNU General Public License v3+\n", stderr);
 	  return 0;
-	  /*@fallthrough@ */
+	  /*@fallthrough@*/
 	case 'o':
 	  if (freopen(optarg, "a", stdout) == (FILE *) NULL)
 	    {
