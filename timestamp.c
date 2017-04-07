@@ -128,7 +128,7 @@ main(int argc, char **argv)
     {"version",   0, NULL, (int) 'v'},
     {"copyright", 0, NULL, (int) 'c'},
     {"format",    1, NULL, (int) 'f'},
-    {NULL,        0, NULL,        0 }
+    { NULL,       0, NULL,        0 }
   };
 
   (void) setlocale(LC_ALL, "");
