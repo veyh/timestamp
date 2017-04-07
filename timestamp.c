@@ -1,8 +1,16 @@
-/* timestamp.c
-
-   Copyright (C) 2011 Klaus Alexander Seistrup <klaus@seistrup.dk>.
-   Released under GPLv3+.
-*/
+/*****************************************************************************
+* Copyright ©2011-2017 Klaus Alexander Seistrup <klaus@seistrup.dk>          *
+*                                                                            *
+* This program is free software; you can redistribute it and/or modify it    *
+* under the terms of the GNU General Public License as published by the Free *
+* Software Foundation; either version 3 of the License, or (at your option)  *
+* any later version.                                                         *
+*                                                                            *
+* This program is distributed in the hope that it will be useful, but with-  *
+* out any warranty; without even the implied warranty of merchantability or  *
+* fitness for a particular purpose. See the GNU General Public License for   *
+* more details.  <http://gplv3.fsf.org/>                                     *
+*****************************************************************************/
 
 #include <stdio.h>
 #include <unistd.h>
