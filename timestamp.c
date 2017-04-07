@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.3 (2017-04-07)"
+#define VERSION  "0.1.4 (2017-04-07)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
@@ -61,19 +61,26 @@ print(char *text, int end)
 static void
 timestamp(char *fmt)
 {
-  time_t t = 0;
+  time_t tnow = 0;
+  struct timespec ts = {
+    .tv_sec = 0,
+    .tv_nsec = 0
+  };
   struct tm *tm = NULL;
   static char buf[BUFSIZE];
 
-  t = time(NULL);
-
-  if (t == (time_t) -1)
+  if (clock_gettime(CLOCK_REALTIME, &ts) != 0)
     {
       perror("Cannot get current time");
       exit(1);
     }
 
-  tm = localtime(&t);
+  tnow = ts.tv_sec;
+
+  if (ts.tv_nsec >= 500000000)
+    tnow += 1;
+
+  tm = localtime(&tnow);
 
   if (tm == (struct tm *) NULL)
     exit(1);
@@ -121,7 +128,7 @@ main(int argc, char **argv)
     {"version",   0, NULL, (int) 'v'},
     {"copyright", 0, NULL, (int) 'c'},
     {"format",    1, NULL, (int) 'f'},
-    { NULL,       0, NULL,        0 }
+    {NULL,        0, NULL,        0 }
   };
 
   (void) setlocale(LC_ALL, "");
