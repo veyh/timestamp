@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.5.1 (2017-04-07)"
+#define VERSION  "0.1.5.2 (2017-04-07)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
@@ -93,7 +93,7 @@ timestamp(char *fmt)
   if (strftime(buf, BUFSIZE, fmt, tm) == 0)
     {
       (void) fprintf(stderr,
-		     "Resulting timestamp should have length 1..%d, please.\n",
+		     "Resulting timestamp must have length 1‥%d.\n",
 		     BUFSIZE-1);
       exit(1);
     }
