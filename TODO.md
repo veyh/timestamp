@@ -2,7 +2,6 @@
 
 * AUR ([#1](https://github.com/kseistrup/timestamp/issues/1))
 * Implement timedelta ([#2](https://github.com/kseistrup/timestamp/issues/2))
-* Use `getopt()` argument parsing ([#3](https://github.com/kseistrup/timestamp/issues/3))
 
 ### Suggestions
 
