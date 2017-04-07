@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.4 (2017-04-07)"
+#define VERSION  "0.1.5 (2017-04-07)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
@@ -35,6 +35,7 @@
 "  -h, --help            show this help message and exit\n" \
 "  -v, --version         show version information and exit\n" \
 "  -c, --copyright       show copying policy and exit\n" \
+"  -u, --utc             use UTC rather than local time\n" \
 "  -f FORMAT, --format FORMAT\n" \
 "                        datetime format (default: ‘%%F %%T’)\n" \
 "\n" \
@@ -44,10 +45,11 @@
 "the first line before timestamp starts reading from standard\n" \
 "input. Use the pseudo filename ‘-’ for standard output.\n"
 
-#define BUFSIZE 128
+#define BUFSIZE 256
 
 char *filename = NULL;
 FILE *out = NULL;
+int use_utc = 0;
 
 static void
 print(char *text, int end)
@@ -80,7 +82,10 @@ timestamp(char *fmt)
   if (ts.tv_nsec >= 500000000)
     tnow += 1;
 
-  tm = localtime(&tnow);
+  if (use_utc == 1)
+    tm = gmtime(&tnow);
+  else
+    tm = localtime(&tnow);
 
   if (tm == (struct tm *) NULL)
     exit(1);
@@ -127,6 +132,7 @@ main(int argc, char **argv)
     {"help",      0, NULL, (int) 'h'},
     {"version",   0, NULL, (int) 'v'},
     {"copyright", 0, NULL, (int) 'c'},
+    {"utc",       0, NULL, (int) 'u'},
     {"format",    1, NULL, (int) 'f'},
     { NULL,       0, NULL,        0 }
   };
@@ -137,7 +143,7 @@ main(int argc, char **argv)
   argv[0] = prog;
   opterr = 0;
 
-  while ((opt = getopt_long(argc, argv, ":hvcf:", long_opts, &idx)) != EOF)
+  while ((opt = getopt_long(argc, argv, ":hvcuf:", long_opts, &idx)) != EOF)
     {
       switch (opt)
 	{
@@ -155,6 +161,9 @@ main(int argc, char **argv)
 	  /*@fallthrough@*/
 	case 'f':
 	  fmt = optarg;
+	  break;
+	case 'u':
+	   use_utc = 1;
 	  break;
 	default:
 	  if (optopt)
