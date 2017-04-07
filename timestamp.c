@@ -15,10 +15,10 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.1 (2017-04-07)"
+#define VERSION  "0.1.3 (2017-04-07)"
 
 #define USAGE \
-"Usage: %s [OPTIONS] [FILENAME]\n" \
+"Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
 "\n" \
 "positional arguments:\n" \
 "  FILENAME              optional output file\n" \
@@ -30,12 +30,16 @@
 "  -f FORMAT, --format FORMAT\n" \
 "                        datetime format (default: ‘%%F %%T’)\n" \
 "\n" \
-"Please see strftime(3) for possible conversion specifications.\n"
+"Please see strftime(3) for possible conversion specifications.\n" \
+"\n" \
+"Any TEXT after FILENAME will be stamped and written verbatim as\n" \
+"the first line before timestamp starts reading from standard\n" \
+"input. Use the pseudo filename ‘-’ for standard output.\n"
 
 #define BUFSIZE 128
 
-char *filename;
-FILE *out;
+char *filename = NULL;
+FILE *out = NULL;
 
 static void
 print(char *text, int end)
@@ -163,7 +167,9 @@ main(int argc, char **argv)
 
   if (argc > 0)
     {
-      filename = argv[0];
+      if (strcmp(argv[0], "-") != 0)
+	filename = argv[0];
+
       --argc;
       ++argv;
     }
@@ -173,9 +179,18 @@ main(int argc, char **argv)
 
   open_out(0);
 
-  c = getchar();
+  if (argc > 0)
+    {
+      timestamp(fmt);
 
-  if (c == EOF)
+      // Python: print(' '.join(argv), end=end)
+      for (idx = 0; idx < (argc - 1); ++idx)
+	print(argv[idx], (int) ' ');
+
+      print(argv[idx], (int) '\n');
+    }
+
+  if ((c = getchar()) == EOF)
     return 0;
 
   if (ungetc(c, stdin) != c)
@@ -185,9 +200,7 @@ main(int argc, char **argv)
 
   for (;;)
     {
-      c = getchar();
-
-      if (c == EOF)
+      if ((c = getchar()) == EOF)
 	return 0;
 
       if (c == (int) '\n')
@@ -195,9 +208,7 @@ main(int argc, char **argv)
 	  if (putchar((int) '\n') == EOF)
 	    return 1;
 
-	  t = getchar();
-
-	  if (t == EOF)
+	  if ((t = getchar()) == EOF)
 	    return 0;
 
 	  if (ungetc(t, stdin) != t)
