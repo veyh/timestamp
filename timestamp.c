@@ -14,7 +14,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.0 (2017-04-07)"
+#define VERSION  "0.1.1 (2017-04-07)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [FILENAME]\n" \
@@ -27,7 +27,9 @@
 "  -v, --version         show version information and exit\n" \
 "  -c, --copyright       show copying policy and exit\n" \
 "  -f FORMAT, --format FORMAT\n" \
-"                        datetime format (default: %%F %%T)\n" \
+"                        datetime format (default: ‘%%F %%T’)\n" \
+"\n" \
+"Please see strftime(3) for possible conversion specifications.\n"
 
 #define BUFSIZE 128
 
@@ -160,7 +162,11 @@ main(int argc, char **argv)
   argc -= optind;
 
   if (argc > 0)
-    filename = argv[0];
+    {
+      filename = argv[0];
+      --argc;
+      ++argv;
+    }
 
   if (signal(SIGHUP, open_out) == SIG_IGN)
     {
