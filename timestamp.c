@@ -8,8 +8,26 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <getopt.h>
 #include <locale.h>
 #include <signal.h>
+#include <libgen.h>
+
+#define PROGNAME "timestamp"
+#define VERSION  "0.1.0 (2017-04-07)"
+
+#define USAGE \
+"Usage: %s [OPTIONS] [FILENAME]\n" \
+"\n" \
+"positional arguments:\n" \
+"  FILENAME              optional output file\n" \
+"\n" \
+"optional arguments:\n" \
+"  -h, --help            show this help message and exit\n" \
+"  -v, --version         show version information and exit\n" \
+"  -c, --copyright       show copying policy and exit\n" \
+"  -f FORMAT, --format FORMAT\n" \
+"                        datetime format (default: %%F %%T)\n" \
 
 #define BUFSIZE 128
 
@@ -26,7 +44,7 @@ timestamp(char *fmt)
 
     t = time(NULL);
 
-    if (t == (time_t) -1)
+    if (t == (time_t) - 1)
       {
 	  perror("Couldn't get current time");
 	  _exit(1);
@@ -81,30 +99,69 @@ main(int argc, char **argv)
 {
     int c, t;
     char *fmt = "%F %T";
-    int used = 0;
-    filename = NULL;
+    int opt, idx = 0;
+    char *prog = basename(argv[0]);
+
+    const struct option long_opts[] = {
+	{"help",      0, NULL, (int) 'h'},
+	{"version",   0, NULL, (int) 'v'},
+	{"copyright", 0, NULL, (int) 'c'},
+	{"format",    1, NULL, (int) 'f'},
+	{ NULL,       0, NULL,        0 }
+    };
 
     (void) setlocale(LC_ALL, "");
 
-    if (argc > 1)
+    filename = NULL;
+    argv[0] = prog;
+    opterr = 0;
+
+    while ((opt = getopt_long(argc, argv, ":hvcf:", long_opts, &idx)) != EOF)
       {
-	  if ((strcmp(argv[1], "-h") == 0)
-	      || (strcmp(argv[1], "--help") == 0))
+	  switch (opt)
 	    {
-		(void) puts("Usage: timestamp [-f FORMAT] [FILENAME]");
+	    case 'h':
+		(void) fprintf(stderr, USAGE, prog);
 		return 0;
-	    }
-	  if ((strcmp(argv[1], "-f") == 0)
-	      || (strcmp(argv[1], "--format") == 0))
-	    {
-		fmt = argv[2];
-		used = 2;
-	    }
-	  if (argc > used)
-	    {
-		filename = argv[used + 1];
+		/*@fallthrough@*/
+	    case 'v':
+		(void) fprintf(stderr, "%s/%s\n", PROGNAME, VERSION);
+		return 0;
+		/*@fallthrough@*/
+	    case 'c':
+		(void) fputs("GNU General Public License v3+\n", stderr);
+		return 0;
+		/*@fallthrough@*/
+	    case 'f':
+		fmt = optarg;
+		break;
+	    default:
+		if (optopt)
+		  {
+		      if (opt == (int) '?')
+			  (void) fprintf(stderr,
+					 "%s: Invalid option ‘%c’.\n",
+					 prog, optopt);
+		      else if (opt == (int) ':')
+			  (void) fprintf(stderr,
+					 "%s: Option ‘%c’ requires an argument.\n",
+					 prog, optopt);
+		  }
+		else if (optind - 1 <= argc)
+		    (void) fprintf(stderr,
+				   "%s: Unrecognized option ‘%s’.\n",
+				   prog, argv[optind - 1]);
+		(void) fprintf(stderr,
+			       "Try ‘%s --help’ for more information.\n",
+			       prog);
+		return 1;
 	    }
       }
+    argv += optind;
+    argc -= optind;
+
+    if (argc > 0)
+     filename = argv[0];
 
     if (signal(SIGHUP, open_out) == SIG_IGN)
       {
