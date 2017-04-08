@@ -23,7 +23,7 @@
 #include <time.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.2.0 (2017-04-08)"
+#define VERSION  "0.2.0.1 (2017-04-08)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -43,7 +43,7 @@
 "If no TEXT is given on the command line, text is read\n" \
 "from standard input and stamped one line at a time.\n" \
 "\n" \
-"RFC 3339 timestamps are given in UTC with µs precision.\n"
+"RFC 3339 timestamps are given with µs precision.\n"
 #else
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
