@@ -5,6 +5,29 @@ Prefix each line with a timestamp
 `timestamp` prefixes each line received on standard input with a
 timestamp in the format `YYYY-MM-DD HH:MM:SS`.
 
+## Usage
+```txt
+Usage: timestamp [OPTIONS] [FILENAME] [TEXT [TEXT …]]
+
+positional arguments:
+  FILENAME              optional output file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show version information and exit
+  -c, --copyright       show copying policy and exit
+  -u, --utc             use UTC rather than local time
+  -r, --rfc3339         use RFC 3339 compliant timestamps
+  -f FORMAT, --format FORMAT
+                        datetime format (default: ‘%F %T’)
+
+Please see strftime(3) for possible conversion specifications.
+
+Any TEXT after FILENAME will be stamped and written verbatim as
+the first line before timestamp starts reading from standard
+input. Use the pseudo filename ‘-’ for standard output.
+```
+
 ## Example
 
 ```sh
