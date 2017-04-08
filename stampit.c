@@ -18,11 +18,12 @@
 #include <string.h>
 #include <getopt.h>
 #include <locale.h>
-#include <time.h>
+#include <signal.h>
 #include <libgen.h>
+#include <time.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.1.3 (2017-04-08)"
+#define VERSION  "0.1.4 (2017-04-08)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
@@ -41,6 +42,8 @@
 "from standard input and stamped one line at a time.\n" \
 "\n" \
 "RFC 3339 timestamps are given in UTC with µs precision.\n"
+
+char *filename = NULL;
 
 static void
 timestamp(void)
@@ -100,6 +103,25 @@ print(char *text, int end)
     exit(1);
 }
 
+static void
+open_out(int signum)
+{
+  if (filename != NULL)
+    {
+      if (freopen(filename, "a", stdout) == (FILE *) NULL)
+	{
+	  perror(filename);
+	  exit(1);
+	}
+    }
+
+  if (setvbuf(stdout, NULL, (int) _IOLBF, 0) != 0)
+    {
+      perror("Cannot set line buffering");
+      exit(1);
+    }
+}
+
 int
 main(int argc, char **argv)
 {
@@ -142,6 +164,7 @@ main(int argc, char **argv)
 	      perror(optarg);
 	      return 1;
 	    }
+	  filename = optarg;
 	  break;
 	default:
 	  if (optopt)
@@ -165,11 +188,10 @@ main(int argc, char **argv)
   argv += optind;
   argc -= optind;
 
-  if (setvbuf(stdout, NULL, (int) _IOLBF, 0) != 0)
-    {
-      perror("Cannot set line buffering");
-      return 1;
-    }
+  if (signal(SIGHUP, open_out) == SIG_IGN)
+    signal(SIGHUP, SIG_IGN);
+
+  open_out(0);
 
   if (argc > 0)
     {
@@ -184,7 +206,7 @@ main(int argc, char **argv)
       return 0;
     }
 
-  if ((c getchar()) == EOF)
+  if ((c = getchar()) == EOF)
     return 0;
 
   if (ungetc(c, stdin) != c)
