@@ -22,7 +22,7 @@
 #include <libgen.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.1.3 (2017-04-06)"
+#define VERSION  "0.1.3 (2017-04-08)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
@@ -184,9 +184,7 @@ main(int argc, char **argv)
       return 0;
     }
 
-  c = getchar();
-
-  if (c == EOF)
+  if ((c getchar()) == EOF)
     return 0;
 
   if (ungetc(c, stdin) != c)
@@ -196,9 +194,7 @@ main(int argc, char **argv)
 
   for (;;)
     {
-      c = getchar();
-
-      if (c == EOF)
+      if ((c = getchar()) == EOF)
 	return 0;
 
       if (c == (int) '\n')
@@ -206,9 +202,7 @@ main(int argc, char **argv)
 	  if (putchar((int) '\n') == EOF)
 	    return 1;
 
-	  t = getchar();
-
-	  if (t == EOF)
+	  if ((t = getchar()) == EOF)
 	    return 0;
 
 	  if (ungetc(t, stdin) != t)
