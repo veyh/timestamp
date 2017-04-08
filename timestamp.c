@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0.1 (2017-04-08)"
+#define VERSION  "0.2.0.2 (2017-04-08)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -126,8 +126,8 @@ timestamp(char *fmt)
 	exit(1);
 
       ss = tm->tm_gmtoff;
-      hh = abs(ss / 3600);
-      mm = abs(ss %   60);
+      hh =  abs(ss) / 3600;
+      mm = (abs(ss) % 3600) / 60;
 
       res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d\t",
 		   tm->tm_year + 1900,
@@ -195,6 +195,11 @@ main(int argc, char **argv)
   char *fmt = NULL;
   int opt, idx = 0;
   char *prog = basename(argv[0]);
+#ifdef __USE_MISC
+  char *short_opts = ":hvcruf:";
+#else
+  char *short_opts = ":hvcuf:";
+#endif
 
   const struct option long_opts[] = {
     {"help",      0, NULL, (int) 'h'},
@@ -214,7 +219,7 @@ main(int argc, char **argv)
   argv[0] = prog;
   opterr = 0;
 
-  while ((opt = getopt_long(argc, argv, ":hvcruf:", long_opts, &idx)) != EOF)
+  while ((opt = getopt_long(argc, argv, short_opts, long_opts, &idx)) != EOF)
     {
       switch (opt)
 	{
