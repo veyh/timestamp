@@ -23,8 +23,30 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.1.5.2 (2017-04-07)"
+#define VERSION  "0.2.0 (2017-04-08)"
 
+#ifdef __USE_MISC
+#define USAGE \
+"Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
+"\n" \
+"positional arguments:\n" \
+"  FILENAME              optional output file\n" \
+"\n" \
+"optional arguments:\n" \
+"  -h, --help            show this help message and exit\n" \
+"  -v, --version         show version information and exit\n" \
+"  -c, --copyright       show copying policy and exit\n" \
+"  -u, --utc             use UTC rather than local time\n" \
+"  -r, --rfc3339         use RFC 3339 compliant timestamps\n" \
+"  -f FORMAT, --format FORMAT\n" \
+"                        datetime format (default: ‘%%F %%T’)\n" \
+"\n" \
+"Please see strftime(3) for possible conversion specifications.\n" \
+"\n" \
+"Any TEXT after FILENAME will be stamped and written verbatim as\n" \
+"the first line before timestamp starts reading from standard\n" \
+"input. Use the pseudo filename ‘-’ for standard output.\n"
+#else
 #define USAGE \
 "Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
 "\n" \
@@ -44,12 +66,17 @@
 "Any TEXT after FILENAME will be stamped and written verbatim as\n" \
 "the first line before timestamp starts reading from standard\n" \
 "input. Use the pseudo filename ‘-’ for standard output.\n"
+#endif
 
 #define BUFSIZE 256
 
 char *filename = NULL;
 FILE *out = NULL;
+
 int use_utc = 0;
+#ifdef __USE_MISC
+int use_rfc3339 = 0;
+#endif
 
 static void
 print(char *text, int end)
@@ -79,26 +106,68 @@ timestamp(char *fmt)
 
   tnow = ts.tv_sec;
 
-  if (ts.tv_nsec >= 500000000)
-    tnow += 1;
-
-  if (use_utc == 1)
-    tm = gmtime(&tnow);
-  else
-    tm = localtime(&tnow);
-
-  if (tm == (struct tm *) NULL)
-    exit(1);
-
-  if (strftime(buf, BUFSIZE, fmt, tm) == 0)
+#ifdef __USE_MISC
+  if (use_rfc3339 == 1)
     {
-      (void) fprintf(stderr,
-		     "Resulting timestamp must have length 1‥%d.\n",
-		     BUFSIZE-1);
-      exit(1);
-    }
+      int hh, mm, ss, res;
+      int usec = (int) ((ts.tv_nsec + 500) / 1000);
 
-  print(buf, (int) '\t');
+      while (usec > 1000000)
+	{
+	  usec -= 1000000;
+	  tnow += 1;
+	}
+
+      if (use_utc == 1)
+	tm = gmtime(&tnow);
+      else
+	tm = localtime(&tnow);
+
+      if (tm == (struct tm *) NULL)
+	exit(1);
+
+      ss = tm->tm_gmtoff;
+      hh = abs(ss / 3600);
+      mm = abs(ss %   60);
+
+      res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d\t",
+		   tm->tm_year + 1900,
+		   tm->tm_mon + 1,
+		   tm->tm_mday,
+		   tm->tm_hour,
+		   tm->tm_min,
+		   tm->tm_sec,
+		   usec,
+		   ss < 0 ? '-' : '+', hh, mm);
+
+      if (res != 33)  // 32 chars for the stamp + 1 TAB
+	exit(1);
+    }
+  else
+    {
+#endif
+      if (ts.tv_nsec >= 500000000)  // gmtime() and localtime()
+	tnow += 1;                  // don't round the seconds.
+
+      if (use_utc == 1)
+	tm = gmtime(&tnow);
+      else
+	tm = localtime(&tnow);
+
+      if (tm == (struct tm *) NULL)
+	exit(1);
+
+      if (strftime(buf, BUFSIZE, fmt, tm) == 0)
+	{
+	  (void) fprintf(stderr,
+			 "Resulting timestamp must have length 1‥%d.\n",
+			 BUFSIZE - 1);
+	  exit(1);
+	}
+      print(buf, (int) '\t');
+#ifdef __USE_MISC
+    }
+#endif
 }
 
 static void
@@ -124,7 +193,7 @@ int
 main(int argc, char **argv)
 {
   int c, t;
-  char *fmt = "%F %T";
+  char *fmt = NULL;
   int opt, idx = 0;
   char *prog = basename(argv[0]);
 
@@ -133,6 +202,9 @@ main(int argc, char **argv)
     {"version",   0, NULL, (int) 'v'},
     {"copyright", 0, NULL, (int) 'c'},
     {"utc",       0, NULL, (int) 'u'},
+#ifdef __USE_MISC
+    {"rfc3339",   0, NULL, (int) 'r'},
+#endif
     {"format",    1, NULL, (int) 'f'},
     { NULL,       0, NULL,        0 }
   };
@@ -143,7 +215,7 @@ main(int argc, char **argv)
   argv[0] = prog;
   opterr = 0;
 
-  while ((opt = getopt_long(argc, argv, ":hvcuf:", long_opts, &idx)) != EOF)
+  while ((opt = getopt_long(argc, argv, ":hvcruf:", long_opts, &idx)) != EOF)
     {
       switch (opt)
 	{
@@ -161,9 +233,29 @@ main(int argc, char **argv)
 	  /*@fallthrough@*/
 	case 'f':
 	  fmt = optarg;
+#ifdef __USE_MISC
+	  if (use_rfc3339 != 0)
+	    {
+	      (void) fprintf(stderr,
+			     "%s: Options ‘--format’ and ‘--rfc3339’ are mutually exclusive.\n",
+			     prog);
+	      return 1;
+	    }
+	  use_rfc3339 = 1;
+	  break;
+	case 'r':
+	  if (fmt != NULL)
+	    {
+	      (void) fprintf(stderr,
+			     "%s: Options ‘--rfc3339’ and ‘--format’ are mutually exclusive.\n",
+			     prog);
+	      return 1;
+	    }
+	  use_rfc3339 = 1;
+#endif
 	  break;
 	case 'u':
-	   use_utc = 1;
+	  use_utc = 1;
 	  break;
 	default:
 	  if (optopt)
@@ -188,6 +280,9 @@ main(int argc, char **argv)
     }
   argv += optind;
   argc -= optind;
+
+  if (fmt == (char *) NULL)
+    fmt = "%F %T";
 
   if (argc > 0)
     {
