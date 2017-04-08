@@ -12,7 +12,7 @@ Usage: timestamp [OPTIONS] [FILENAME] [TEXT [TEXT …]]
 
 positional arguments:
   FILENAME              optional output file
-  TEXT                  optional text to print on first line
+  TEXT                  optional startup message
 
 optional arguments:
   -h, --help            show this help message and exit

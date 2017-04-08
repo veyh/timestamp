@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0.2 (2017-04-08)"
+#define VERSION  "0.2.0.3 (2017-04-08)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -31,6 +31,7 @@
 "\n" \
 "positional arguments:\n" \
 "  FILENAME              optional output file\n" \
+"  TEXT                  optional startup message\n" \
 "\n" \
 "optional arguments:\n" \
 "  -h, --help            show this help message and exit\n" \
@@ -52,6 +53,7 @@
 "\n" \
 "positional arguments:\n" \
 "  FILENAME              optional output file\n" \
+"  TEXT                  optional startup message\n" \
 "\n" \
 "optional arguments:\n" \
 "  -h, --help            show this help message and exit\n" \
