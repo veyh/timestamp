@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0 (2017-04-08)"
+#define VERSION  "0.2.0.1 (2017-04-08)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -71,7 +71,6 @@
 #define BUFSIZE 256
 
 char *filename = NULL;
-FILE *out = NULL;
 
 int use_utc = 0;
 #ifdef __USE_MISC
@@ -175,7 +174,7 @@ open_out(int signum)
 {
   if (filename != NULL)
     {
-      if ((out = freopen(filename, "a", stdout)) == (FILE *) NULL)
+      if (freopen(filename, "a", stdout) == (FILE *) NULL)
 	{
 	  perror(filename);
 	  exit(1);
