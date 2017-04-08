@@ -23,8 +23,28 @@
 #include <time.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.1.5 (2017-04-08)"
+#define VERSION  "0.2.0 (2017-04-08)"
 
+#ifdef __USE_MISC
+#define USAGE \
+"Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
+"\n" \
+"positional arguments:\n" \
+"  TEXT                  optional text to timestamp\n" \
+"\n" \
+"optional arguments:\n" \
+"  -h, --help            show this help message and exit\n" \
+"  -v, --version         show version information and exit\n" \
+"  -c, --copyright       show copying policy and exit\n" \
+"  -l, --localtime       use local time rather than UTC\n" \
+"  -o OUTPUT, --output OUTPUT\n" \
+"                        path of output file\n" \
+"\n" \
+"If no TEXT is given on the command line, text is read\n" \
+"from standard input and stamped one line at a time.\n" \
+"\n" \
+"RFC 3339 timestamps are given in UTC with µs precision.\n"
+#else
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
 "\n" \
@@ -42,19 +62,25 @@
 "from standard input and stamped one line at a time.\n" \
 "\n" \
 "RFC 3339 timestamps are given in UTC with µs precision.\n"
+#endif
 
 char *filename = NULL;
+
+#ifdef __USE_MISC
+int use_localtime = 0;
+#endif
 
 static void
 timestamp(void)
 {
   int res, usec;
+  int hh = 0, mm = 0, ss = 0;
   time_t tnow = 0;
   struct timespec ts = {
     .tv_sec = 0,
     .tv_nsec = 0
   };
-  struct tm *utc = NULL;
+  struct tm *tm = NULL;
 
   res = clock_gettime(CLOCK_REALTIME, &ts);
 
@@ -73,22 +99,33 @@ timestamp(void)
       tnow += 1;
     }
 
-  utc = gmtime(&tnow);
+#ifdef __USE_MISC
+  if (use_localtime == 1)
+    {
+      tm = localtime(&tnow);
+      ss = tm->tm_gmtoff;
+      hh =  abs(ss) / 3600;
+      mm = (abs(ss) % 3600) / 60;
+    }
+  else
+#endif
+    tm = gmtime(&tnow);
 
-  if (utc == (struct tm *) NULL)
+  if (tm == (struct tm *) NULL)
     exit(1);
 
   // YYYY-MM-DDThh:mm:ss.uuuuuu+00:00t
   // ----+----|----+----|----+----|---
   // = 32 chars for the stamp and 1 char for the TAB
-  res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d+00:00\t",
-	       utc->tm_year + 1900,
-	       utc->tm_mon + 1,
-	       utc->tm_mday,
-	       utc->tm_hour,
-	       utc->tm_min,
-	       utc->tm_sec,
-	       usec);
+  res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d\t",
+	       tm->tm_year + 1900,
+	       tm->tm_mon + 1,
+	       tm->tm_mday,
+	       tm->tm_hour,
+	       tm->tm_min,
+	       tm->tm_sec,
+	       usec,
+	       ss < 0 ? '-' : '+', hh, mm);
 
   if (res != 33)
     exit(1);
@@ -128,6 +165,11 @@ main(int argc, char **argv)
   int c, t;
   int opt, idx = 0;
   char *prog = basename(argv[0]);
+#ifdef __USE_MISC
+  char *short_opts = ":hvclo:";
+#else
+  char *short_opts = ":hvco:";
+#endif
 
   const struct option long_opts[] = {
     {"help",      0, NULL, (int) 'h'},
@@ -142,7 +184,7 @@ main(int argc, char **argv)
   argv[0] = prog;
   opterr = 0;
 
-  while ((opt = getopt_long(argc, argv, ":hvco:", long_opts, &idx)) != EOF)
+  while ((opt = getopt_long(argc, argv, short_opts, long_opts, &idx)) != EOF)
     {
       switch (opt)
 	{
@@ -161,6 +203,11 @@ main(int argc, char **argv)
 	case 'o':
 	  filename = optarg;
 	  break;
+#ifdef __USE_MISC
+	case 'l':
+	  use_localtime = 1;
+	  break;
+#endif
 	default:
 	  if (optopt)
 	    {
