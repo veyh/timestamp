@@ -23,7 +23,7 @@
 #include <time.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.1.4 (2017-04-08)"
+#define VERSION  "0.1.5 (2017-04-08)"
 
 #define USAGE \
 "Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
@@ -159,11 +159,6 @@ main(int argc, char **argv)
 	  return 0;
 	  /*@fallthrough@*/
 	case 'o':
-	  if (freopen(optarg, "a", stdout) == (FILE *) NULL)
-	    {
-	      perror(optarg);
-	      return 1;
-	    }
 	  filename = optarg;
 	  break;
 	default:
