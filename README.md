@@ -1,4 +1,4 @@
-# timestamp
+# Timestamp
 
 Prefix each line with a timestamp
 
@@ -6,11 +6,13 @@ Prefix each line with a timestamp
 timestamp in the format `YYYY-MM-DD HH:MM:SS`.
 
 ## Usage
+
 ```txt
 Usage: timestamp [OPTIONS] [FILENAME] [TEXT [TEXT …]]
 
 positional arguments:
   FILENAME              optional output file
+  TEXT                  optional text to print on first line
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -37,7 +39,9 @@ $ (echo A; sleep 2s; echo B; sleep 3s; echo C) | timestamp
 2011-03-14 20:59:03     C
 ```
 
-# stampit
+----
+
+# Stampit
 
 `stampit` is a special flavour of `timestamp` that
 
@@ -50,6 +54,28 @@ This makes `stampit` a useful candidate for e.g.
 
 * posting to a [twtxt.txt](https://github.com/buckket/twtxt) file, or
 * logging one-line events to an ever-growing logfile.
+
+## Usage
+
+```txt
+Usage: stampit [OPTIONS] [TEXT [TEXT …]]
+
+positional arguments:
+  TEXT                  optional text to timestamp
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show version information and exit
+  -c, --copyright       show copying policy and exit
+  -l, --localtime       use local time rather than UTC
+  -o OUTPUT, --output OUTPUT
+                        path of output file
+
+If no TEXT is given on the command line, text is read
+from standard input and stamped one line at a time.
+
+RFC 3339 timestamps are given with µs precision.
+```
 
 ## Example
 
