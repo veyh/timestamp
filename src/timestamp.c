@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0.3 (2017-04-08)"
+#define VERSION  "0.2.0.4 (2017-04-11)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -138,7 +138,7 @@ timestamp(char *fmt)
 		     tm->tm_hour,
 		     tm->tm_min,
 		     tm->tm_sec,
-		     sec,
+		     usec,
 		     ss < 0 ? '-' : '+', hh, mm);
 
 	if (res != 33)		// 32 chars for the stamp + 1 TAB
