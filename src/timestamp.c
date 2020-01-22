@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0.4 (2017-04-11)"
+#define VERSION  "0.2.0.5 (2020-01-22)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -113,6 +113,7 @@ timestamp(char *fmt)
 	int hh, mm, ss, res;
 	int usec = (int) ((ts.tv_nsec + 500) / 1000);
 
+	puts("rfc3339");
 	while (usec > 1000000)
 	  {
 	     usec -= 1000000;
@@ -247,7 +248,6 @@ main(int argc, char **argv)
 				 prog);
 		  return 1;
 	       }
-	     use_rfc3339 = 1;
 	     break;
 	  case 'r':
 	     if (fmt != NULL)
