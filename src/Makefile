@@ -32,7 +32,7 @@ install: $(FILTERS) $(ZMANPAGES)
 mostlyclean:
 	@rm -vf *~
 clean: mostlyclean
-	@rm -vf $(ZMANPAGES)
+	@rm -vf $(FILTERS) $(ZMANPAGES)
 distclean: clean
 	@rm -vf $(MANPAGES)
 
