@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.3.0.0 (2020-11-20)"
+#define VERSION  "0.3.0 (2020-11-20)"
 
 #ifdef __USE_MISC
 #define USAGE \
