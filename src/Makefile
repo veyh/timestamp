@@ -14,7 +14,7 @@ SCDOC      = scdoc
 INSTALL    = install
 
 .PHONY: all
-all: $(FILTERS) $(MANPAGES)
+all: $(FILTERS) $(MANPAGES) $(ZMANPAGES)
 
 install: $(FILTERS) $(ZMANPAGES)
 	@test -d $(BINDIR) || mkdir -p $(BINDIR)
@@ -34,6 +34,6 @@ mostlyclean:
 clean: mostlyclean
 	@rm -vf $(FILTERS) $(ZMANPAGES)
 distclean: clean
-	@rm -vf $(MANPAGES)
+	@rm -vf $(MANPAGES) $(ZMANPAGES)
 
 # eof
