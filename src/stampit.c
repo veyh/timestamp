@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Copyright ©2017 Klaus Alexander Seistrup <klaus@seistrup.dk>               *
+* Copyright ©2017-20 Klaus Alexander Seistrup <klaus@seistrup.dk>            *
 *                                                                            *
 * This program is free software; you can redistribute it and/or modify it    *
 * under the terms of the GNU General Public License as published by the Free *
@@ -23,11 +23,11 @@
 #include <time.h>
 
 #define PROGNAME "stampit"
-#define VERSION  "0.2.0.1 (2017-04-08)"
+#define VERSION  "0.3.1 (2020-11-20)"
 
 #ifdef __USE_MISC
 #define USAGE \
-"Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
+"Usage: %s [OPTIONS] [TEXT …]\n" \
 "\n" \
 "positional arguments:\n" \
 "  TEXT                  optional text to timestamp\n" \
@@ -38,15 +38,18 @@
 "  -c, --copyright       show copying policy and exit\n" \
 "  -l, --localtime       use local time rather than UTC\n" \
 "  -o OUTPUT, --output OUTPUT\n" \
-"                        path of output file\n" \
+"                        path to output file\n" \
 "\n" \
 "If no TEXT is given on the command line, text is read\n" \
 "from standard input and stamped one line at a time.\n" \
 "\n" \
-"RFC 3339 timestamps are given with µs precision.\n"
+"RFC 3339 timestamps are given with µs precision.\n" \
+"\n" \
+"If stampit receives a SIGHUP and OUTPUT has been given,\n" \
+"stampit will reopen the file.\n"
 #else
 #define USAGE \
-"Usage: %s [OPTIONS] [TEXT [TEXT …]]\n" \
+"Usage: %s [OPTIONS] [TEXT …]\n" \
 "\n" \
 "positional arguments:\n" \
 "  TEXT                  optional text to timestamp\n" \
@@ -56,12 +59,15 @@
 "  -v, --version         show version information and exit\n" \
 "  -c, --copyright       show copying policy and exit\n" \
 "  -o OUTPUT, --output OUTPUT\n" \
-"                        path of output file\n" \
+"                        path to output file\n" \
 "\n" \
 "If no TEXT is given on the command line, text is read\n" \
 "from standard input and stamped one line at a time.\n" \
 "\n" \
 "RFC 3339 timestamps are given in UTC with µs precision.\n"
+"\n" \
+"If stampit receives a SIGHUP and OUTPUT has been given,\n" \
+"stampit will reopen the file.\n"
 #endif
 
 char *filename = NULL;

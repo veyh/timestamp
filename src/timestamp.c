@@ -23,11 +23,11 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.3.0 (2020-11-20)"
+#define VERSION  "0.3.1 (2020-11-20)"
 
 #ifdef __USE_MISC
 #define USAGE \
-"Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
+"Usage: %s [OPTIONS] [FILENAME] [TEXT …]\n" \
 "\n" \
 "positional arguments:\n" \
 "  FILENAME              optional output file\n" \
@@ -47,10 +47,13 @@
 "\n" \
 "Any TEXT after FILENAME will be stamped and written verbatim as\n" \
 "the first line before timestamp starts reading from standard\n" \
-"input. Use the pseudo filename ‘-’ for standard output.\n"
+"input. Use the pseudo filename ‘-’ for standard output.\n" \
+"\n" \
+"If timestamp receives a SIGHUP and FILENAME has been given,\n" \
+"timestamp will reopen the file.\n"
 #else
 #define USAGE \
-"Usage: %s [OPTIONS] [FILENAME] [TEXT [TEXT …]]\n" \
+"Usage: %s [OPTIONS] [FILENAME] [TEXT …]\n" \
 "\n" \
 "positional arguments:\n" \
 "  FILENAME              optional output file\n" \
@@ -68,7 +71,10 @@
 "\n" \
 "Any TEXT after FILENAME will be stamped and written verbatim as\n" \
 "the first line before timestamp starts reading from standard\n" \
-"input. Use the pseudo filename ‘-’ for standard output.\n"
+"input. Use the pseudo filename ‘-’ for standard output.\n" \
+"\n" \
+"If timestamp receives a SIGHUP and FILENAME has been given,\n" \
+"timestamp will reopen the file.\n"
 #endif
 
 #define BUFSIZE 256

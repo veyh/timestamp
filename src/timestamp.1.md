@@ -1,4 +1,4 @@
-TIMESTAMP(1)	"V0.3.0"
+TIMESTAMP(1)	"V0.3.1"
 
 # NAME
 
@@ -6,7 +6,7 @@ timestamp - prefix each line with a timestamp
 
 # SYNOPSIS
 
-*timestamp* [_OPTIONS_] [_FILENAME_] [_TEXT_ [_TEXT_ …]]
+*timestamp* [_OPTIONS_] [_FILENAME_] [_TEXT_ …]
 
 # DESCRIPTION
 
