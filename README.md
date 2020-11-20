@@ -20,6 +20,7 @@ optional arguments:
   -c, --copyright       show copying policy and exit
   -u, --utc             use UTC rather than local time
   -r, --rfc3339         use RFC 3339 compliant timestamps
+  -t, --tai64n          use TAI64n timestamps
   -f FORMAT, --format FORMAT
                         datetime format (default: ‘%F %T’)
 
@@ -34,9 +35,13 @@ input. Use the pseudo filename ‘-’ for standard output.
 
 ```sh
 $ (echo A; sleep 2s; echo B; sleep 3s; echo C) | timestamp
-2011-03-14 20:58:58     A
-2011-03-14 20:59:00     B
-2011-03-14 20:59:03     C
+2020-11-20 10:29:44	A
+2020-11-20 10:29:46	B
+2020-11-20 10:29:49	C
+$ (echo A; sleep 2s; echo B; sleep 3s; echo C) | timestamp --tai64n
+@400000005fb78c9e339ac51c	A
+@400000005fb78ca033d3fc29	B
+@400000005fb78ca334742e9a	C
 ```
 
 ----

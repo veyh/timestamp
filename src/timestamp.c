@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Copyright ©2011-2017 Klaus Alexander Seistrup <klaus@seistrup.dk>          *
+* Copyright ©2011-2020 Klaus Alexander Seistrup <klaus@seistrup.dk>          *
 *                                                                            *
 * This program is free software; you can redistribute it and/or modify it    *
 * under the terms of the GNU General Public License as published by the Free *
@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.2.0.5 (2020-07-24)"
+#define VERSION  "0.3.0.0 (2020-11-20)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -39,6 +39,7 @@
 "  -c, --copyright       show copying policy and exit\n" \
 "  -u, --utc             use UTC rather than local time\n" \
 "  -r, --rfc3339         use RFC 3339 compliant timestamps\n" \
+"  -t, --tai64n          use TAI64n timestamps\n" \
 "  -f FORMAT, --format FORMAT\n" \
 "                        datetime format (default: ‘%%F %%T’)\n" \
 "\n" \
@@ -71,12 +72,14 @@
 #endif
 
 #define BUFSIZE 256
+#define OFFSET ((1ULL<<62) + 10ULL)
 
 char *filename = NULL;
 
 int use_utc = 0;
 #ifdef __USE_MISC
 int use_rfc3339 = 0;
+int use_tai64n = 0;
 #endif
 
 static void
@@ -98,6 +101,9 @@ timestamp(char *fmt)
    };
    struct tm *tm = NULL;
    static char buf[BUFSIZE];
+#ifdef __USE_MISC
+   int res;
+#endif
 
    if (clock_gettime(CLOCK_REALTIME, &ts) != 0)
      {
@@ -110,7 +116,7 @@ timestamp(char *fmt)
 #ifdef __USE_MISC
    if (use_rfc3339 == 1)
      {
-	int hh, mm, ss, res;
+	int hh, mm, ss;
 	int usec = (int) ((ts.tv_nsec + 500) / 1000);
 
 	while (usec > 1000000)
@@ -143,6 +149,13 @@ timestamp(char *fmt)
 
 	if (res != 33)		// 32 chars for the stamp + 1 TAB
 	   exit(1);
+     }
+   else if (use_tai64n == 1)
+     {
+	res = printf("@%016Lx%08Lx\t", ts.tv_sec + OFFSET, ts.tv_nsec);
+
+	if (res != 26)
+	  exit(1);
      }
    else
      {
@@ -198,7 +211,7 @@ main(int argc, char **argv)
    int opt, idx = 0;
    char *prog = basename(argv[0]);
 #ifdef __USE_MISC
-   char *short_opts = ":hvcruf:";
+   char *short_opts = ":hvcrtuf:";
 #else
    char *short_opts = ":hvcuf:";
 #endif
@@ -210,6 +223,7 @@ main(int argc, char **argv)
       {"utc",       0, NULL, (int) 'u'},
 #ifdef __USE_MISC
       {"rfc3339",   0, NULL, (int) 'r'},
+      {"tai64n",    0, NULL, (int) 't'},
 #endif
       {"format",    1, NULL, (int) 'f'},
       { NULL,       0, NULL,        0 }
@@ -257,6 +271,16 @@ main(int argc, char **argv)
 		  return 1;
 	       }
 	     use_rfc3339 = 1;
+	     break;
+	  case 't':
+	     if (fmt != NULL)
+	       {
+		  (void) fprintf(stderr,
+				 "%s: Options ‘--tai64n’ and ‘--format’ are mutually exclusive.\n",
+				 prog);
+		  return 1;
+	       }
+	     use_tai64n = 1;
 #endif
 	     break;
 	  case 'u':
