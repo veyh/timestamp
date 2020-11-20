@@ -71,8 +71,8 @@ Debian stuff and original man pages
 
 Please see git repositories:
 
-- https://koldfront.dk/git/timestamp/
 - https://github.com/kseistrup/timestamp/
+- https://koldfront.dk/git/timestamp/
 
 # COPYRIGHT
 
