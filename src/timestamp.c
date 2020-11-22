@@ -23,7 +23,7 @@
 #include <libgen.h>
 
 #define PROGNAME "timestamp"
-#define VERSION  "0.3.1 (2020-11-20)"
+#define VERSION  "0.3.2 (2020-11-22)"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -158,7 +158,7 @@ timestamp(char *fmt)
      }
    else if (use_tai64n == 1)
      {
-	res = printf("@%016Lx%08Lx\t", ts.tv_sec + OFFSET, ts.tv_nsec);
+	res = printf("@%016llx%08lx\t", ts.tv_sec + OFFSET, ts.tv_nsec);
 
 	if (res != 26)
 	  exit(1);

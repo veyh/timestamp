@@ -1,4 +1,4 @@
-TIMESTAMP(1)	"V0.3.1"
+TIMESTAMP(1)	"V0.3.2"
 
 # NAME
 
