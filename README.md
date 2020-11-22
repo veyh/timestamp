@@ -5,6 +5,10 @@ Prefix each line with a timestamp
 `timestamp` prefixes each line received on standard input with a
 timestamp in the format `YYYY-MM-DD HH:MM:SS`.
 
+## Installation
+
+Please see the included `INSTALL.md` file.
+
 ## Usage
 
 ```txt

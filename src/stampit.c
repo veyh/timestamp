@@ -22,8 +22,7 @@
 #include <libgen.h>
 #include <time.h>
 
-#define PROGNAME "stampit"
-#define VERSION  "0.3.1 (2020-11-20)"
+#include "version.h"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -199,7 +198,7 @@ main(int argc, char **argv)
 	     return 0;
 	     /*@fallthrough@ */
 	  case 'v':
-	     (void) fprintf(stderr, "%s/%s\n", PROGNAME, VERSION);
+	     (void) fprintf(stderr, "%s/%s\n", STAMPIT, VERSION);
 	     return 0;
 	     /*@fallthrough@ */
 	  case 'c':

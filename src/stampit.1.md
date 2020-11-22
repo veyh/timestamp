@@ -1,4 +1,4 @@
-STAMPIT(1)	"V0.3.1"
+STAMPIT(1)	"V0.3.2"
 
 # NAME
 
@@ -66,6 +66,7 @@ GNU General Public License, version 3 or later.
 
 # SEE ALSO
 
+*timestamp*(1),
 *ts*(1) from the moreutils package,
 *kill*(1) and *killall*(1) for how to send a SIGHUP to *stampit*,
 and *logrotate*(8).

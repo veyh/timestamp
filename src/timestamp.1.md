@@ -84,6 +84,7 @@ GNU General Public License, version 3 or later.
 
 # SEE ALSO
 
+*stampit*(1),
 *strftime*(3) for date and time conversion specifications,
 *ts*(1) from the moreutils package,
 *kill*(1) and *killall*(1) for how to send a SIGHUP to *timestamp*,

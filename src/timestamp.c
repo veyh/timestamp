@@ -22,8 +22,7 @@
 #include <signal.h>
 #include <libgen.h>
 
-#define PROGNAME "timestamp"
-#define VERSION  "0.3.2 (2020-11-22)"
+#include "version.h"
 
 #ifdef __USE_MISC
 #define USAGE \
@@ -250,7 +249,7 @@ main(int argc, char **argv)
 	     return 0;
 	     /*@fallthrough@ */
 	  case 'v':
-	     (void) fprintf(stderr, "%s/%s\n", PROGNAME, VERSION);
+	     (void) fprintf(stderr, "%s/%s\n", TIMESTAMP, VERSION);
 	     return 0;
 	     /*@fallthrough@ */
 	  case 'c':
