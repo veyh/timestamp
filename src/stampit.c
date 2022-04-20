@@ -63,7 +63,7 @@
 "If no TEXT is given on the command line, text is read\n" \
 "from standard input and stamped one line at a time.\n" \
 "\n" \
-"RFC 3339 timestamps are given in UTC with µs precision.\n"
+"RFC 3339 timestamps are given in UTC with µs precision.\n" \
 "\n" \
 "If stampit receives a SIGHUP and OUTPUT has been given,\n" \
 "stampit will reopen the file.\n"
