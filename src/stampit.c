@@ -59,6 +59,8 @@
 "  -c, --copyright       show copying policy and exit\n" \
 "  -o OUTPUT, --output OUTPUT\n" \
 "                        path to output file\n" \
+"  -s SEPARATOR, --separator SEPARATOR\n" \
+"                        separator to use, defaults to one space\n" \
 "\n" \
 "If no TEXT is given on the command line, text is read\n" \
 "from standard input and stamped one line at a time.\n" \
@@ -70,6 +72,8 @@
 #endif
 
 char *filename = NULL;
+char *separator = " ";
+size_t separator_length = 1;
 
 #ifdef __USE_MISC
 int use_localtime = 0;
@@ -119,10 +123,10 @@ timestamp(void)
    if (tm == (struct tm *) NULL)
       exit(1);
 
-   // YYYY-MM-DDThh:mm:ss.uuuuuu+00:00t
-   // ----+----|----+----|----+----|---
-   // = 32 chars for the stamp and 1 char for the TAB
-   res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d\t",
+   // YYYY-MM-DDThh:mm:ss.uuuuuu+00:00
+   // ----+----|----+----|----+----|--
+   // = 32 chars for the stamp and 1+ chars for the separator
+   res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d%s",
 		tm->tm_year + 1900,
 		tm->tm_mon + 1,
 		tm->tm_mday,
@@ -130,9 +134,10 @@ timestamp(void)
 		tm->tm_min,
 		tm->tm_sec,
 		usec,
-		ss < 0 ? '-' : '+', hh, mm);
+		ss < 0 ? '-' : '+', hh, mm,
+      separator);
 
-   if (res != 33)
+   if (res != (32 + separator_length))
       exit(1);
 }
 
@@ -171,9 +176,9 @@ main(int argc, char **argv)
    int opt, idx = 0;
    char *prog = basename(argv[0]);
 #ifdef __USE_MISC
-   char *short_opts = ":hvclo:";
+   char *short_opts = ":hvclo:s:";
 #else
-   char *short_opts = ":hvco:";
+   char *short_opts = ":hvco:s:";
 #endif
 
    const struct option long_opts[] = {
@@ -181,6 +186,7 @@ main(int argc, char **argv)
       {"version",   0, NULL, (int) 'v'},
       {"copyright", 0, NULL, (int) 'c'},
       {"output",    1, NULL, (int) 'o'},
+      {"separator", 1, NULL, (int) 's'},
       { NULL,       0, NULL,        0 }
    };
 
@@ -213,6 +219,10 @@ main(int argc, char **argv)
 	     use_localtime = 1;
 	     break;
 #endif
+     case 's':
+        separator = optarg;
+        separator_length = strlen(separator);
+        break;
 	  default:
 	     if (optopt)
 	       {

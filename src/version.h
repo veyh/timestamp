@@ -4,6 +4,6 @@
 #define TIMESTAMP "timestamp"
 #define STAMPIT   "stampit"
 
-#define VERSION   "0.3.2 (2020-11-22)"
+#define VERSION   "0.4.0 (2022-04-30)"
 
 #endif

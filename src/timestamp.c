@@ -41,6 +41,8 @@
 "  -t, --tai64n          use TAI64n timestamps\n" \
 "  -f FORMAT, --format FORMAT\n" \
 "                        datetime format (default: ‘%%F %%T’)\n" \
+"  -s SEPARATOR, --separator SEPARATOR\n" \
+"                        separator to use, defaults to one space\n" \
 "\n" \
 "Please see strftime(3) for possible conversion specifications.\n" \
 "\n" \
@@ -65,6 +67,8 @@
 "  -u, --utc             use UTC rather than local time\n" \
 "  -f FORMAT, --format FORMAT\n" \
 "                        datetime format (default: ‘%%F %%T’)\n" \
+"  -s SEPARATOR, --separator SEPARATOR\n" \
+"                        separator to use, defaults to one space\n" \
 "\n" \
 "Please see strftime(3) for possible conversion specifications.\n" \
 "\n" \
@@ -80,6 +84,8 @@
 #define OFFSET ((1ULL<<62) + 10ULL)
 
 char *filename = NULL;
+char *separator = " ";
+size_t separator_length = 1;
 
 int use_utc = 0;
 #ifdef __USE_MISC
@@ -93,6 +99,15 @@ print(char *text, int end)
    if (fputs(text, stdout) == EOF)
       exit(1);
    if (putchar(end) == EOF)
+      exit(1);
+}
+
+static void
+print_string(char *text, char *end)
+{
+   if (fputs(text, stdout) == EOF)
+      exit(1);
+   if (fputs(end, stdout) == EOF)
       exit(1);
 }
 
@@ -142,7 +157,7 @@ timestamp(char *fmt)
 	hh =  abs(ss) / 3600;
 	mm = (abs(ss) % 3600) / 60;
 
-	res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d\t",
+	res = printf("%04d-%02d-%02dT%02d:%02d:%02d.%06d%c%02d:%02d%s",
 		     tm->tm_year + 1900,
 		     tm->tm_mon + 1,
 		     tm->tm_mday,
@@ -150,16 +165,17 @@ timestamp(char *fmt)
 		     tm->tm_min,
 		     tm->tm_sec,
 		     usec,
-		     ss < 0 ? '-' : '+', hh, mm);
+		     ss < 0 ? '-' : '+', hh, mm,
+		     separator);
 
-	if (res != 33)		// 32 chars for the stamp + 1 TAB
+	if (res != (32 + separator_length)) // 32 chars for the stamp + separator
 	   exit(1);
      }
    else if (use_tai64n == 1)
      {
-	res = printf("@%016llx%08lx\t", ts.tv_sec + OFFSET, ts.tv_nsec);
+	res = printf("@%016llx%08lx%s", ts.tv_sec + OFFSET, ts.tv_nsec, separator);
 
-	if (res != 26)
+	if (res != (25 + separator_length))
 	  exit(1);
      }
    else
@@ -183,7 +199,7 @@ timestamp(char *fmt)
 			    BUFSIZE - 1);
 	     exit(1);
 	  }
-	print(buf, (int) '\t');
+	print_string(buf, separator);
 #ifdef __USE_MISC
      }
 #endif
@@ -216,9 +232,9 @@ main(int argc, char **argv)
    int opt, idx = 0;
    char *prog = basename(argv[0]);
 #ifdef __USE_MISC
-   char *short_opts = ":hvcrtuf:";
+   char *short_opts = ":hvcrtuf:s:";
 #else
-   char *short_opts = ":hvcuf:";
+   char *short_opts = ":hvcuf:s:";
 #endif
 
    const struct option long_opts[] = {
@@ -231,6 +247,7 @@ main(int argc, char **argv)
       {"tai64n",    0, NULL, (int) 't'},
 #endif
       {"format",    1, NULL, (int) 'f'},
+      {"separator", 1, NULL, (int) 's'},
       { NULL,       0, NULL,        0 }
    };
 
@@ -291,6 +308,10 @@ main(int argc, char **argv)
 	  case 'u':
 	     use_utc = 1;
 	     break;
+     case 's':
+        separator = optarg;
+        separator_length = strlen(separator);
+        break;
 	  default:
 	     if (optopt)
 	       {
